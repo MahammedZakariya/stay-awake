@@ -1,1 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Keep Awake Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    button {
+      font-size: 1.5rem;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+    }
+    #statusText {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Keep Awake Demo</h1>
+  <button id="keepAwakeBtn">Keep Awake: OFF</button>
+  <p id="statusText">Screen may sleep.</p>
+
+  <script>
+    let wakeLock = null;
+    const btn = document.getElementById('keepAwakeBtn');
+    const status = document.getElementById('statusText');
+
+    async function requestWakeLock() {
+      try {
+        wakeLock = await navigator.wakeLock.request("screen");
+        btn.textContent = "Keep Awake: ON";
+        status.textContent = "Screen will stay awake while this tab is open.";
+        wakeLock.addEventListener("release", () => {
+          btn.textContent = "Keep Awake: OFF";
+          status.textContent = "Screen may sleep.";
+        });
+      } catch (err) {
+        alert("Wake Lock not available: " + err.message);
+      }
+    }
+
+    async function releaseWakeLock() {
+      if (wakeLock !== null) {
+        await wakeLock.release();
+        wakeLock = null;
+      }
+      btn.textContent = "Keep Awake: OFF";
+      status.textContent = "Screen may sleep.
 
