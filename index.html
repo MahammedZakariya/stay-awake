@@ -30,29 +30,38 @@
   <p id="statusText">Screen may sleep.</p>
 
   <script>
-    let wakeLock = null;
+    let keepAwake = false;
+    let intervalId;
+
     const btn = document.getElementById('keepAwakeBtn');
     const status = document.getElementById('statusText');
 
-    async function requestWakeLock() {
-      try {
-        wakeLock = await navigator.wakeLock.request("screen");
-        btn.textContent = "Keep Awake: ON";
-        status.textContent = "Screen will stay awake while this tab is open.";
-        wakeLock.addEventListener("release", () => {
-          btn.textContent = "Keep Awake: OFF";
-          status.textContent = "Screen may sleep.";
-        });
-      } catch (err) {
-        alert("Wake Lock not available: " + err.message);
-      }
+    function startFakeActivity() {
+      intervalId = setInterval(() => {
+        // Scroll down 1px and back up — tiny movement to count as "activity"
+        window.scrollBy(0, 1);
+        window.scrollBy(0, -1);
+        console.log("Fake activity tick");
+      }, 30000); // every 30 seconds
+
+      btn.textContent = "Keep Awake: ON";
+      status.textContent = "System is being kept awake.";
     }
 
-    async function releaseWakeLock() {
-      if (wakeLock !== null) {
-        await wakeLock.release();
-        wakeLock = null;
-      }
+    function stopFakeActivity() {
+      clearInterval(intervalId);
       btn.textContent = "Keep Awake: OFF";
-      status.textContent = "Screen may sleep.
+      status.textContent = "Screen may sleep.";
+    }
 
+    btn.addEventListener("click", () => {
+      if (!keepAwake) {
+        startFakeActivity();
+      } else {
+        stopFakeActivity();
+      }
+      keepAwake = !keepAwake;
+    });
+  </script>
+</body>
+</html>
