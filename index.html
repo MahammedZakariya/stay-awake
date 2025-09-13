@@ -1,67 +1,37 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Keep Awake Demo</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 100px;
-    }
-    button {
-      font-size: 1.5rem;
-      padding: 1rem 2rem;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      background: #4CAF50;
-      color: white;
-    }
-    #statusText {
-      margin-top: 20px;
-      font-size: 1.2rem;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keep Awake (PWA)</title>
+<meta name="theme-color" content="#0ea5e9" />
+<link rel="manifest" href="./manifest.webmanifest" type="application/manifest+json">
+<style>
+:root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; }
+body { display: grid; place-items: center; min-height: 100svh; margin: 0; background: #0b1220; color: #e6f1ff; }
+.card { width: min(560px, 92vw); background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgb(0 0 0 / 35%); }
+h1 { margin: 0 0 8px; font-size: 1.35rem; }
+p { margin: 0 0 16px; opacity: .85; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+button { appearance: none; border: 0; border-radius: 12px; padding: 14px 18px; font-weight: 600; cursor: pointer; }
+#onBtn { background: #22c55e; color: #052e16; }
+#offBtn{ background: #ef4444; color: #3f0a0a; }
+#installBtn { background: #0ea5e9; color: #021824; margin-left: auto; }
+.status { margin-top: 14px; font-size: .95rem; }
+.hint { margin-top: 8px; opacity: .7; font-size: .85rem; }
+</style>
 </head>
 <body>
-  <h1>Keep Awake Demo</h1>
-  <button id="keepAwakeBtn">Keep Awake: OFF</button>
-  <p id="statusText">Screen may sleep.</p>
-
-  <script>
-    let keepAwake = false;
-    let intervalId;
-
-    const btn = document.getElementById('keepAwakeBtn');
-    const status = document.getElementById('statusText');
-
-    function startFakeActivity() {
-      intervalId = setInterval(() => {
-        // Scroll down 1px and back up — tiny movement to count as "activity"
-        window.scrollBy(0, 1);
-        window.scrollBy(0, -1);
-        console.log("Fake activity tick");
-      }, 30000); // every 30 seconds
-
-      btn.textContent = "Keep Awake: ON";
-      status.textContent = "System is being kept awake.";
-    }
-
-    function stopFakeActivity() {
-      clearInterval(intervalId);
-      btn.textContent = "Keep Awake: OFF";
-      status.textContent = "Screen may sleep.";
-    }
-
-    btn.addEventListener("click", () => {
-      if (!keepAwake) {
-        startFakeActivity();
-      } else {
-        stopFakeActivity();
-      }
-      keepAwake = !keepAwake;
-    });
-  </script>
+<main class="card">
+<h1>Keep Awake</h1>
+<p>Click <strong>ON</strong> to prevent your display from sleeping. This helps keep Teams from going Away.</p>
+<div class="row">
+<button id="onBtn">ON – Prevent Idle</button>
+<button id="offBtn" disabled>OFF – Allow Idle</button>
+<button id="installBtn" hidden>Install App</button>
+</div>
+<div class="status" id="status">Wake Lock: <strong>inactive</strong></div>
+<div class="hint">Tip: keep this window open and not minimized for best results.</div>
+</main>
+<script src="./app.js" type="module"></script>
 </body>
 </html>
